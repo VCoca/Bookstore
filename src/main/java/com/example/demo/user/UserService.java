@@ -5,6 +5,9 @@ import com.example.demo.user.dto.AuthResponse;
 import com.example.demo.user.dto.LoginUserRequest;
 import com.example.demo.user.dto.RegisterUserRequest;
 import com.example.demo.user.dto.UserDto;
+import com.example.demo.user.exception.EmailAlreadyUsedException;
+import com.example.demo.user.exception.JmbgAlreadyUsedException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -24,10 +27,10 @@ public class UserService {
     @Transactional
     public UserDto register(RegisterUserRequest request){
         if(repository.existsByEmail(request.email())){
-            throw new IllegalArgumentException("Email je vec u upotrebi");
+            throw new EmailAlreadyUsedException(request.email());
         }
         if(repository.existsByJmbg(request.jmbg())){
-            throw new IllegalArgumentException("JMBG je vec u upotrebi");
+            throw new JmbgAlreadyUsedException();
         }
 
         String hashedPassword = passwordEncoder.encode(request.password());
@@ -46,10 +49,10 @@ public class UserService {
 
     public AuthResponse login(LoginUserRequest request){
         User user = repository.findByEmail(request.email())
-                .orElseThrow(() -> new IllegalArgumentException("Pogresan e-mail ili lozinka"));
+                .orElseThrow(() -> new BadCredentialsException("Pogresan e-mail ili lozinka"));
 
         if(!passwordEncoder.matches(request.password(), user.getPasswordHashed())){
-            throw new IllegalArgumentException("Pogresan e-mail ili lozinka");
+            throw new BadCredentialsException("Pogresan e-mail ili lozinka");
         }
 
         String token = jwtService.generateToken(request.email(), user.getRole());
