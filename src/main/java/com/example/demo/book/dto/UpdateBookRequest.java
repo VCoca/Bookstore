@@ -3,6 +3,8 @@ package com.example.demo.book.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
 
+import java.math.BigDecimal;
+
 @Schema(description = "Payload for updating an existing book")
 public record UpdateBookRequest(
 
@@ -25,5 +27,10 @@ public record UpdateBookRequest(
         @Schema(description = "Number of copies in stock", example = "10")
         @NotNull
         @PositiveOrZero
-        int availableCopies
+        int availableCopies,
+
+        @Schema(description = "Price of the book", example = "1000")
+        @NotNull
+        @PositiveOrZero
+        BigDecimal price
 ) {}

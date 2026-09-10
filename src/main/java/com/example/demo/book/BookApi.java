@@ -4,6 +4,7 @@ package com.example.demo.book;
 import com.example.demo.book.dto.BookDto;
 import com.example.demo.book.dto.CreateBookRequest;
 import com.example.demo.book.dto.UpdateBookRequest;
+import com.example.demo.order.dto.OrderDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -51,7 +52,7 @@ public interface BookApi {
 
     @Operation(
             summary = "Purchase a book",
-            description = "Decrements the number of available copies and sends email to user that bought it.")
+            description = "Decrements the number of available copies, sends email to user that bought it and makes new order.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Book purchased successfully"),
             @ApiResponse(responseCode = "404", description = "No book with that ISBN",
@@ -59,7 +60,7 @@ public interface BookApi {
             @ApiResponse(responseCode = "409", description = "No more books available",
                     content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
     })
-    BookDto buyBook(
+    OrderDto buyBook(
             @Parameter(description = "Book ISBN", example = "9788610010114") String isbn, Authentication auth);
 
     @Operation(

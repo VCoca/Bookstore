@@ -2,6 +2,8 @@ package com.example.demo.book;
 
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
+
 @Entity
 @Table(name = "books")
 public class Book {
@@ -23,17 +25,21 @@ public class Book {
     private Integer publishedYear;
 
     @Column(name = "available_copies", nullable = false)
-    private int availableCopies;
+    private Integer availableCopies;
+
+    @Column(nullable = false)
+    private BigDecimal price;
 
     protected Book(){
     }
 
-    public Book(String title, String author, String isbn, Integer publishedYear, int availableCopies) {
+    public Book(String title, String author, String isbn, Integer publishedYear, Integer availableCopies, BigDecimal price) {
         this.title = title;
         this.author = author;
         this.isbn = isbn;
         this.publishedYear = publishedYear;
         this.availableCopies = availableCopies;
+        this.price = price;
     }
 
     public Long getId() {
@@ -78,5 +84,13 @@ public class Book {
 
     public void setAvailableCopies(int availableCopies) {
         this.availableCopies = availableCopies;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
     }
 }

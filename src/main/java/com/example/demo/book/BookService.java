@@ -6,6 +6,12 @@ import com.example.demo.book.dto.UpdateBookRequest;
 import com.example.demo.book.exception.BookNotFoundException;
 import com.example.demo.book.exception.DuplicateIsbnException;
 import com.example.demo.book.exception.NoMoreBooksException;
+import com.example.demo.order.Order;
+import com.example.demo.order.OrderRepository;
+import com.example.demo.order.dto.OrderDto;
+import com.example.demo.user.User;
+import com.example.demo.user.UserRepository;
+import com.example.demo.user.exception.UserNotFoundException;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
@@ -15,52 +21,66 @@ import java.util.List;
 @Service
 @Transactional(readOnly = true)
 public class BookService {
-    private final BookRepository repository;
-    public final ApplicationEventPublisher events;
 
-    public BookService(BookRepository repository, ApplicationEventPublisher events){
-        this.repository = repository;
+    private final BookRepository bookRepository;
+    private final OrderRepository orderRepository;
+    public final ApplicationEventPublisher events;
+    private final UserRepository userRepository;
+
+    public BookService(BookRepository bookRepository, OrderRepository orderRepository, ApplicationEventPublisher events, UserRepository userRepository){
+        this.bookRepository = bookRepository;
+        this.orderRepository = orderRepository;
         this.events = events;
+        this.userRepository = userRepository;
     }
 
     public List<BookDto> findAll(){
-        return repository.findAll().stream()
+        return bookRepository.findAll().stream()
                 .map(BookDto::from)
                 .toList();
     }
 
     public BookDto findById(Long id) {
-        return repository.findById(id)
+        return bookRepository.findById(id)
                 .map(BookDto::from)
                 .orElseThrow(() -> new BookNotFoundException(id));
     }
 
     public List<BookDto> searchByTitle(String fragment) {
-        return repository.findByTitleContainingIgnoreCase(fragment).stream()
+        return bookRepository.findByTitleContainingIgnoreCase(fragment).stream()
                 .map(BookDto::from)
                 .toList();
     }
 
     @Transactional
-    public BookDto buyBook(String isbn, String buyerEmail){
+    public OrderDto buyBook(String isbn, String buyerEmail){
 
-        int updated = repository.decrementCopies(isbn);
+        int updated = bookRepository.decrementCopies(isbn);
 
-        Book book = repository.findByIsbn(isbn)
+        Book book = bookRepository.findByIsbn(isbn)
                 .orElseThrow(() -> new BookNotFoundException(isbn));
+
+        User user = userRepository.findByEmail(buyerEmail)
+                .orElseThrow(() -> new UserNotFoundException(buyerEmail));
 
         if(updated == 0){
             throw new NoMoreBooksException();
         }
+        
+        Order order = new Order(
+                user,
+                book,
+                book.getPrice()
+        );
 
         events.publishEvent(new BookPurchasedEvent(buyerEmail, book.getTitle(), book.getIsbn()));
 
-        return BookDto.from(book);
+        return OrderDto.from(orderRepository.save(order));
     }
 
     @Transactional
     public BookDto create(CreateBookRequest request) {
-        if (repository.existsByIsbn(request.isbn())) {
+        if (bookRepository.existsByIsbn(request.isbn())) {
             throw new DuplicateIsbnException(request.isbn());
         }
         Book book = new Book(
@@ -68,29 +88,31 @@ public class BookService {
                 request.author(),
                 request.isbn(),
                 request.publishedYear(),
-                request.availableCopies()
+                request.availableCopies(),
+                request.price()
         );
-        return BookDto.from(repository.save(book));
+        return BookDto.from(bookRepository.save(book));
     }
 
     @Transactional
     public BookDto update(Long id, UpdateBookRequest request) {
-        Book book = repository.findById(id)
+        Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new BookNotFoundException(id));
 
         book.setTitle(request.title());
         book.setAuthor(request.author());
         book.setPublishedYear(request.publishedYear());
         book.setAvailableCopies(request.availableCopies());
+        book.setPrice(request.price());
 
         return BookDto.from(book);
     }
 
     @Transactional
     public void delete(Long id) {
-        if (!repository.existsById(id)) {
+        if (!bookRepository.existsById(id)) {
             throw new BookNotFoundException(id);
         }
-        repository.deleteById(id);
+        bookRepository.deleteById(id);
     }
 }

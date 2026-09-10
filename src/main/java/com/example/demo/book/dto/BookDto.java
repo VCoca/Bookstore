@@ -3,6 +3,8 @@ package com.example.demo.book.dto;
 import com.example.demo.book.Book;
 import io.swagger.v3.oas.annotations.media.Schema;
 
+import java.math.BigDecimal;
+
 @Schema(description = "A book in the catalogue")
 public record BookDto(
 
@@ -22,7 +24,10 @@ public record BookDto(
         Integer publishedYear,
 
         @Schema(description = "Copies currently in stock", example = "3")
-        Integer availableCopies
+        Integer availableCopies,
+
+        @Schema(description = "Price of the book", example = "1000")
+        BigDecimal price
 ) {
     public static BookDto from(Book book) {
         return new BookDto(
@@ -31,7 +36,8 @@ public record BookDto(
                 book.getAuthor(),
                 book.getIsbn(),
                 book.getPublishedYear(),
-                book.getAvailableCopies()
+                book.getAvailableCopies(),
+                book.getPrice()
         );
     }
 }

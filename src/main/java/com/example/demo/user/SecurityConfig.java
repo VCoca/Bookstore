@@ -38,7 +38,9 @@ public class SecurityConfig {
                                 "/v3/api-docs",
                                 "/v3/api-docs/**",
                                 "/v3/api-docs.yaml").permitAll()
-                        .requestMatchers("/api/books/admin/**").hasRole("ADMIN")
+                        .requestMatchers(
+                                "/api/books/admin/**",
+                                "/api/orders/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

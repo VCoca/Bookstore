@@ -3,6 +3,7 @@ package com.example.demo.book;
 import com.example.demo.book.dto.BookDto;
 import com.example.demo.book.dto.CreateBookRequest;
 import com.example.demo.book.dto.UpdateBookRequest;
+import com.example.demo.order.dto.OrderDto;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -41,7 +42,7 @@ public class BookController implements BookApi {
 
     @Override
     @PostMapping("/{isbn}/buy")
-    public BookDto buyBook(@PathVariable String isbn, Authentication auth) { return service.buyBook(isbn, auth.getName()); }
+    public OrderDto buyBook(@PathVariable String isbn, Authentication auth) { return service.buyBook(isbn, auth.getName()); }
 
     @Override
     @PostMapping("/admin")
