@@ -1,6 +1,9 @@
 package com.example.demo.book;
 
+import com.example.demo.book.dto.BookDto;
 import com.example.demo.book.dto.CreateBookRequest;
+import com.example.demo.book.dto.UpdateBookRequest;
+import com.example.demo.book.exception.BookNotFoundException;
 import com.example.demo.book.exception.DuplicateIsbnException;
 import com.example.demo.book.exception.NoMoreBooksException;
 import com.example.demo.order.Order;
@@ -52,6 +55,7 @@ class BookServiceTest {
 
     @BeforeEach
     void setUp(){
+
         book = new Book("Na Drini ćuprija", "Ivo Andrić", ISBN, 1945, 3, BigDecimal.valueOf(1200));
         ReflectionTestUtils.setField(book, "id", 1L);
 
@@ -77,7 +81,7 @@ class BookServiceTest {
     }
 
     @Test
-    @DisplayName("odbijena uplata poništava umanjenje stanja i ne šalje mejl")
+    @DisplayName("odbijena uplata ne kreira narudžbinu i ne objavljuje događaj")
     void buyBookFailsWhenPaymentDeclined() {
         when(bookRepository.decrementCopies(ISBN)).thenReturn(1);
         when(bookRepository.findByIsbn(ISBN)).thenReturn(Optional.of(book));
@@ -133,5 +137,30 @@ class BookServiceTest {
                 .isInstanceOf(DuplicateIsbnException.class);
 
         verify(bookRepository, never()).save(any());
+    }
+
+    @Test
+    @DisplayName("update baca konflikt kada ID ne postoji")
+    void updateFailsOnBookNotFound() {
+        when(bookRepository.findById(1L)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> service.update(1L, new UpdateBookRequest(
+                "Seobe", "Miloš Crnjanski", 1946, 5, new BigDecimal("800.00"))))
+                .isInstanceOf(BookNotFoundException.class);
+
+    }
+
+    @Test
+    @DisplayName("update menja polja na postojećoj knjizi")
+    void updateChangesFields() {
+        when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
+
+        BookDto result = service.update(1L, new UpdateBookRequest(
+                "Novi naslov", "Novi autor", 2000, 7, new BigDecimal("999.00")));
+
+        assertThat(result.title()).isEqualTo("Novi naslov");
+        assertThat(book.getTitle()).isEqualTo("Novi naslov");
+        assertThat(book.getAvailableCopies()).isEqualTo(7);
+        assertThat(book.getPrice()).isEqualByComparingTo("999.00");
     }
 }
