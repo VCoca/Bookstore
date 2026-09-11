@@ -10,8 +10,14 @@ import com.example.demo.user.exception.JmbgAlreadyUsedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class DomainExceptionHandler {
@@ -71,5 +77,20 @@ public class DomainExceptionHandler {
                 "Payment provider is currently unavailable, please try again");
         p.setTitle("Payment provider unavailable");
         return p;
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ProblemDetail handleValidation(MethodArgumentNotValidException ex) {
+        Map<String, String> errors = ex.getBindingResult().getFieldErrors().stream()
+                .collect(Collectors.toMap(
+                        FieldError::getField,
+                        f -> Optional.ofNullable(f.getDefaultMessage()).orElse("invalid"),
+                        (a, b) -> a));
+
+        var problem = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
+        problem.setTitle("Validation failed");
+        problem.setDetail("One or more fields are invalid");
+        problem.setProperty("errors", errors);
+        return problem;
     }
 }
