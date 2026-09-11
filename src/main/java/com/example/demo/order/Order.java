@@ -31,13 +31,17 @@ public class Order {
     @Column(nullable = false, updatable = false)
     private Instant createdAt;
 
+    @Column(nullable = false, precision = 8, scale = 2)
+    private String transactionID;
+
     protected Order() {}
 
-    public Order(User user, Book book, BigDecimal priceAtPurchase) {
+    public Order(User user, Book book, BigDecimal priceAtPurchase, String transactionID) {
         this.user = user;
         this.book = book;
         this.priceAtPurchase = priceAtPurchase;
         this.createdAt = Instant.now();
+        this.transactionID = transactionID;
     }
 
     public long getId() {
@@ -70,5 +74,13 @@ public class Order {
 
     public Instant getCreatedAt() {
         return createdAt;
+    }
+
+    public String getTransactionID() {
+        return transactionID;
+    }
+
+    public void setTransactionID(String transactionID) {
+        this.transactionID = transactionID;
     }
 }

@@ -9,6 +9,9 @@ import com.example.demo.book.exception.NoMoreBooksException;
 import com.example.demo.order.Order;
 import com.example.demo.order.OrderRepository;
 import com.example.demo.order.dto.OrderDto;
+import com.example.demo.payment.PaymentClient;
+import com.example.demo.payment.dto.PaymentRequest;
+import com.example.demo.payment.dto.PaymentResult;
 import com.example.demo.user.User;
 import com.example.demo.user.UserRepository;
 import com.example.demo.user.exception.UserNotFoundException;
@@ -26,12 +29,14 @@ public class BookService {
     private final OrderRepository orderRepository;
     public final ApplicationEventPublisher events;
     private final UserRepository userRepository;
+    private final PaymentClient paymentClient;
 
-    public BookService(BookRepository bookRepository, OrderRepository orderRepository, ApplicationEventPublisher events, UserRepository userRepository){
+    public BookService(BookRepository bookRepository, OrderRepository orderRepository, ApplicationEventPublisher events, UserRepository userRepository, PaymentClient paymentClient){
         this.bookRepository = bookRepository;
         this.orderRepository = orderRepository;
         this.events = events;
         this.userRepository = userRepository;
+        this.paymentClient = paymentClient;
     }
 
     public List<BookDto> findAll(){
@@ -66,11 +71,14 @@ public class BookService {
         if(updated == 0){
             throw new NoMoreBooksException();
         }
+
+        PaymentResult payment = paymentClient.charge(new PaymentRequest(buyerEmail, book.getPrice(), isbn));
         
         Order order = new Order(
                 user,
                 book,
-                book.getPrice()
+                book.getPrice(),
+                payment.transactionId()
         );
 
         events.publishEvent(new BookPurchasedEvent(buyerEmail, book.getTitle(), book.getIsbn()));

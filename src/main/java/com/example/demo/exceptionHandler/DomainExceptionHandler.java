@@ -3,6 +3,8 @@ package com.example.demo.exceptionHandler;
 import com.example.demo.book.exception.BookNotFoundException;
 import com.example.demo.book.exception.DuplicateIsbnException;
 import com.example.demo.book.exception.NoMoreBooksException;
+import com.example.demo.payment.exception.PaymentDeclinedException;
+import com.example.demo.payment.exception.PaymentGatewayException;
 import com.example.demo.user.exception.EmailAlreadyUsedException;
 import com.example.demo.user.exception.JmbgAlreadyUsedException;
 import org.springframework.http.HttpStatus;
@@ -54,5 +56,20 @@ public class DomainExceptionHandler {
         var problem = ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, ex.getMessage());
         problem.setTitle("Authentication failed");
         return problem;
+    }
+
+    @ExceptionHandler(PaymentDeclinedException.class)
+    public ProblemDetail handleDeclined(PaymentDeclinedException ex) {
+        var p = ProblemDetail.forStatusAndDetail(HttpStatus.PAYMENT_REQUIRED, ex.getMessage());
+        p.setTitle("Payment declined");
+        return p;
+    }
+
+    @ExceptionHandler(PaymentGatewayException.class)
+    public ProblemDetail handleGateway(PaymentGatewayException ex) {
+        var p = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_GATEWAY,
+                "Payment provider is currently unavailable, please try again");
+        p.setTitle("Payment provider unavailable");
+        return p;
     }
 }

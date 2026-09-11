@@ -26,7 +26,10 @@ public record OrderDto(
         BigDecimal priceAtPurchase,
 
         @Schema(description = "Exact date and time of purchase", example = "2026-09-10T11:45:00Z")
-        Instant createdAt
+        Instant createdAt,
+
+        @Schema(description = "ID of transaction", example = "tx-123")
+        String transactionId
 ) {
 
     public static OrderDto from(Order order) {
@@ -35,7 +38,8 @@ public record OrderDto(
                 UserDto.from(order.getUser()),
                 BookDto.from(order.getBook()),
                 order.getPriceAtPurchase(),
-                order.getCreatedAt()
+                order.getCreatedAt(),
+                order.getTransactionID()
         );
     }
 }
