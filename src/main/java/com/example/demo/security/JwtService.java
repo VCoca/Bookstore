@@ -2,6 +2,7 @@ package com.example.demo.security;
 
 import com.example.demo.user.UserRole;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -43,14 +44,6 @@ public class JwtService {
                 .getPayload();
     }
 
-    public Claims parseClaims(String token) {
-        return Jwts.parser()
-                .verifyWith(getSigningKey())
-                .build()
-                .parseSignedClaims(token)
-                .getPayload();
-    }
-
     public <T> T extractClaim(String token, Function<Claims, T> resolver){
         return resolver.apply(extractAllClaims(token));
     }
@@ -59,8 +52,14 @@ public class JwtService {
         return extractClaim(token, Claims::getSubject);
     }
 
-    public boolean isTokenValid(String token, String email){
-        return extractEmail(token).equals(email) && !isTokenExpired(token);
+    public boolean isTokenValid(String token, String email) {
+        try {
+            Claims claims = extractAllClaims(token);
+            return claims.getSubject().equals(email)
+                    && claims.getExpiration().after(new Date());
+        } catch (JwtException | IllegalArgumentException e) {
+            return false;
+        }
     }
 
     private boolean isTokenExpired(String token) {

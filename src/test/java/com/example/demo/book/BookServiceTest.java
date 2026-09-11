@@ -65,7 +65,7 @@ class BookServiceTest {
     }
 
     @Test
-    @DisplayName("uspešna kupovina naplaćuje, snima narudžbinu i objavljuje događaj")
+    @DisplayName("successful purchase charges money, saves the order and publishes event")
     void buyBookSucceeds() {
         when(bookRepository.decrementCopies(ISBN)).thenReturn(1);
         when(bookRepository.findByIsbn(ISBN)).thenReturn(Optional.of(book));
@@ -81,7 +81,7 @@ class BookServiceTest {
     }
 
     @Test
-    @DisplayName("odbijena uplata ne kreira narudžbinu i ne objavljuje događaj")
+    @DisplayName("cancelled payment does not create order and does not publish event")
     void buyBookFailsWhenPaymentDeclined() {
         when(bookRepository.decrementCopies(ISBN)).thenReturn(1);
         when(bookRepository.findByIsbn(ISBN)).thenReturn(Optional.of(book));
@@ -96,7 +96,7 @@ class BookServiceTest {
     }
 
     @Test
-    @DisplayName("ne naplaćuje kada nema više primeraka")
+    @DisplayName("does not charge if there is no more books in stock")
     void buyBookDoesNotChargeWhenOutOfStock() {
         when(bookRepository.decrementCopies(ISBN)).thenReturn(0);
         when(bookRepository.findByIsbn(ISBN)).thenReturn(Optional.of(book));
@@ -110,7 +110,7 @@ class BookServiceTest {
     }
 
     @Test
-    @DisplayName("prosleđuje tačan iznos i referencu ka platnom servisu")
+    @DisplayName("sends exact price and reference to payment service")
     void buyBookSendsCorrectPaymentRequest() {
         when(bookRepository.decrementCopies(ISBN)).thenReturn(1);
         when(bookRepository.findByIsbn(ISBN)).thenReturn(Optional.of(book));
@@ -128,7 +128,7 @@ class BookServiceTest {
     }
 
     @Test
-    @DisplayName("create baca konflikt kada ISBN već postoji")
+    @DisplayName("create throws exception for duplicate ISBN")
     void createFailsOnDuplicateIsbn() {
         when(bookRepository.existsByIsbn(ISBN)).thenReturn(true);
 
@@ -140,7 +140,7 @@ class BookServiceTest {
     }
 
     @Test
-    @DisplayName("update baca konflikt kada ID ne postoji")
+    @DisplayName("update throws exception when ID doesn't exist")
     void updateFailsOnBookNotFound() {
         when(bookRepository.findById(1L)).thenReturn(Optional.empty());
 
@@ -151,7 +151,7 @@ class BookServiceTest {
     }
 
     @Test
-    @DisplayName("update menja polja na postojećoj knjizi")
+    @DisplayName("update changes fields on existing book")
     void updateChangesFields() {
         when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
 
