@@ -1,10 +1,12 @@
 package com.example.demo.book;
 
 import com.example.demo.IntegrationTestBase;
+import com.example.demo.book.exception.NoMoreBooksException;
 import com.example.demo.order.OrderRepository;
 import com.example.demo.payment.PaymentClient;
 import com.example.demo.payment.PaymentStatus;
 import com.example.demo.payment.dto.PaymentResult;
+import com.example.demo.payment.exception.PaymentDeclinedException;
 import com.example.demo.user.User;
 import com.example.demo.user.UserRepository;
 import com.example.demo.user.UserRole;
@@ -57,5 +59,37 @@ class BuyBookIT extends IntegrationTestBase {
         assertThat(orderRepository.findAll()).hasSize(1);
         assertThat(orderRepository.findAll().getFirst().getTransactionID())
                 .isEqualTo("tx-123");
+    }
+
+    @Test
+    @DisplayName("declined payment reverts changes and doesnt create order")
+    void declinedPaymentRollsBackStock() {
+        when(paymentClient.charge(any()))
+                .thenThrow(new PaymentDeclinedException("Insufficient funds"));
+
+        assertThatThrownBy(() -> bookService.buyBook(ISBN, EMAIL))
+                .isInstanceOf(PaymentDeclinedException.class);
+
+        assertThat(bookRepository.findByIsbn(ISBN).orElseThrow().getAvailableCopies())
+                .isEqualTo(3);
+        assertThat(orderRepository.findAll()).isEmpty();
+    }
+
+    @Test
+    @DisplayName("purchase of the last copy goes through, next one throws 409")
+    void secondPurchaseFailsWhenStockExhausted() {
+        Book book = bookRepository.findByIsbn(ISBN).orElseThrow();
+        book.setAvailableCopies(1);
+        bookRepository.save(book);
+
+        when(paymentClient.charge(any()))
+                .thenReturn(new PaymentResult("tx-1", PaymentStatus.APPROVED));
+
+        bookService.buyBook(ISBN, EMAIL);
+
+        assertThatThrownBy(() -> bookService.buyBook(ISBN, EMAIL))
+                .isInstanceOf(NoMoreBooksException.class);
+
+        assertThat(orderRepository.findAll()).hasSize(1);
     }
 }
