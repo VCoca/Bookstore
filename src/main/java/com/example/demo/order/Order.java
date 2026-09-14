@@ -32,7 +32,7 @@ public class Order {
     private Instant createdAt;
 
     @Column(nullable = false, precision = 8, scale = 2)
-    private String transactionID;
+    private String transactionId;
 
     protected Order() {}
 
@@ -41,7 +41,7 @@ public class Order {
         this.book = book;
         this.priceAtPurchase = priceAtPurchase;
         this.createdAt = Instant.now();
-        this.transactionID = transactionID;
+        this.transactionId = transactionID;
     }
 
     public long getId() {
@@ -76,11 +76,11 @@ public class Order {
         return createdAt;
     }
 
-    public String getTransactionID() {
-        return transactionID;
+    public String getTransactionId() {
+        return transactionId;
     }
 
-    public void setTransactionID(String transactionID) {
-        this.transactionID = transactionID;
+    public void setTransactionId(String transactionID) {
+        this.transactionId = transactionID;
     }
 }

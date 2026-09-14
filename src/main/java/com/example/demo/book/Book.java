@@ -18,16 +18,16 @@ public class Book {
     @Column(nullable = false, length = 120)
     private String author;
 
-    @Column(unique = true, length = 13)
+    @Column(nullable = false, unique = true, length = 13)
     private String isbn;
 
-    @Column(name = "published_year")
+    @Column(nullable = false, name = "published_year")
     private Integer publishedYear;
 
     @Column(name = "available_copies", nullable = false)
     private Integer availableCopies;
 
-    @Column(nullable = false)
+    @Column(precision = 8, scale = 2, nullable = false)
     private BigDecimal price;
 
     protected Book(){

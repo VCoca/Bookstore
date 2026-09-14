@@ -9,6 +9,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -67,5 +68,10 @@ class UserServiceTest {
                 .doesNotContain(RAW_PASSWORD)
                 .doesNotContain(HASHED_PASSWORD)
                 .doesNotContain(JMBG);
+    }
+
+    @Test
+    void generateHash() {
+        System.out.println(new BCryptPasswordEncoder().encode("user1234"));
     }
 }

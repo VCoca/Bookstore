@@ -39,7 +39,7 @@ public record OrderDto(
                 BookDto.from(order.getBook()),
                 order.getPriceAtPurchase(),
                 order.getCreatedAt(),
-                order.getTransactionID()
+                order.getTransactionId()
         );
     }
 }

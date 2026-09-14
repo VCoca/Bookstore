@@ -57,7 +57,7 @@ class BuyBookIT extends IntegrationTestBase {
         assertThat(bookRepository.findByIsbn(ISBN).orElseThrow().getAvailableCopies())
                 .isEqualTo(2);
         assertThat(orderRepository.findAll()).hasSize(1);
-        assertThat(orderRepository.findAll().getFirst().getTransactionID())
+        assertThat(orderRepository.findAll().getFirst().getTransactionId())
                 .isEqualTo("tx-123");
     }
 
