@@ -19,3 +19,11 @@ jobs:
 
       - name: Run all tests
         run: ./mvnw verify
+
+      - name: Test report
+        uses: dorny/test-reporter@v1
+        if: always()
+        with:
+          name: Test results
+          path: '**/target/*-reports/TEST-*.xml'
+          reporter: java-junit
