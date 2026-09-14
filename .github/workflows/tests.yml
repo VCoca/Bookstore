@@ -19,6 +19,9 @@ jobs:
 
       - name: Run all tests
         run: ./mvnw verify
+        env:
+          JWT_SECRET: test-secret-key-koji-mora-imati-bar-256-bitova-duzine-za-hs256
+          DB_PASSWORD: postgres
 
       - name: Test report
         uses: dorny/test-reporter@v1

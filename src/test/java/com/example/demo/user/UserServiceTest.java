@@ -69,9 +69,4 @@ class UserServiceTest {
                 .doesNotContain(HASHED_PASSWORD)
                 .doesNotContain(JMBG);
     }
-
-    @Test
-    void generateHash() {
-        System.out.println(new BCryptPasswordEncoder().encode("user1234"));
-    }
 }
