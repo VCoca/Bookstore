@@ -2,6 +2,7 @@ package com.example.demo.order;
 
 import com.example.demo.order.dto.OrderDto;
 import jakarta.servlet.ServletRequest;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,5 +36,11 @@ public class OrderController implements OrderApi{
     @GetMapping("/book/{id}")
     public List<OrderDto> findByBookId(@PathVariable Long id){
         return orderService.findByBookId(id);
+    }
+
+
+    @GetMapping("/me")
+    public List<OrderDto> findMyOrders(Authentication auth) {
+        return orderService.findMyOrders(auth.getName());
     }
 }

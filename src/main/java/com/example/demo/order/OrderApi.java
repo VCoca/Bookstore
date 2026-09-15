@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ProblemDetail;
+import org.springframework.security.core.Authentication;
 
 import java.util.List;
 
@@ -49,4 +50,14 @@ public interface OrderApi {
     })
     List<OrderDto> findByBookId(
             @Parameter(description = "Book ID", example = "1") Long id);
+
+    @Operation(
+            summary = "Get my orders",
+            description = "Returns the authenticated user's purchase history, newest first")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Orders found"),
+            @ApiResponse(responseCode = "401", description = "Missing or invalid token",
+                    content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
+    })
+    List<OrderDto> findMyOrders(@Parameter(hidden = true) Authentication auth);
 }
