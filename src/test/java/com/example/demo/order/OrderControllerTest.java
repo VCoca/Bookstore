@@ -2,6 +2,7 @@ package com.example.demo.order;
 
 import com.example.demo.book.BookController;
 import com.example.demo.exceptionHandler.DomainExceptionHandler;
+import com.example.demo.security.JwtService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,14 +18,17 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(BookController.class)
+@WebMvcTest(OrderController.class)
 @Import(DomainExceptionHandler.class)
 @AutoConfigureMockMvc(addFilters = false)
 class OrderControllerTest {
 
     @Autowired MockMvc mvc;
+
+    @MockitoBean JwtService jwtService;
 
     @MockitoBean OrderService orderService;
 
@@ -43,7 +47,13 @@ class OrderControllerTest {
     @Test
     @DisplayName("neulogovan korisnik ne može da vidi narudžbine")
     void meRequiresAuthentication() throws Exception {
-        mvc.perform(get("/api/orders/me"))
-                .andExpect(status().isForbidden());
+        when(orderService.findAll()).thenReturn(List.of());
+
+        mvc.perform(get("/api/orders")
+                        .with(user("marko@gmail.com").roles("ADMIN")))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray());
+
+        verify(orderService).findAll();
     }
 }
