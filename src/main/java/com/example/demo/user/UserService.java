@@ -37,8 +37,8 @@ public class UserService {
 
         User user = new User(
                 request.jmbg(),
-                request.ime(),
-                request.prezime(),
+                request.firstName(),
+                request.lastName(),
                 UserRole.USER,
                 request.email(),
                 hashedPassword

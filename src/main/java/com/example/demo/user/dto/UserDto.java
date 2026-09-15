@@ -11,10 +11,10 @@ public record UserDto (
         Long id,
 
         @Schema(example = "Veljko")
-        String ime,
+        String firstName,
 
         @Schema(example = "Petrović")
-        String prezime,
+        String lastName,
 
         @Schema(example = "USER")
         UserRole role,
@@ -25,8 +25,8 @@ public record UserDto (
     public static UserDto from(User user){
         return new UserDto(
                 user.getId(),
-                user.getIme(),
-                user.getPrezime(),
+                user.getFirstName(),
+                user.getLastName(),
                 user.getRole(),
                 user.getEmail()
         );

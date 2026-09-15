@@ -1,12 +1,12 @@
 -- admin nalog
 -- lozinka: admin1234 (BCrypt heš)
-INSERT INTO users (jmbg, ime, prezime, role, email, password_hashed) VALUES
+INSERT INTO users (jmbg, first_name, last_name, role, email, password_hashed) VALUES
     ('0101990710011', 'Marko', 'Marković', 'ADMIN', 'admin@bookstore.local',
      '$2a$10$8FkiuAQTYE.hvmX5hyV6b.fYzzV1SSSJU1bwtQgVtH/GadsrjW1Gy');
 
 -- obican korisnik
 -- lozinka: user1234
-INSERT INTO users (jmbg, ime, prezime, role, email, password_hashed) VALUES
+INSERT INTO users (jmbg, first_name, last_name, role, email, password_hashed) VALUES
     ('0202991710022', 'Ivan', 'Ivanović', 'USER', 'ivan@bookstore.local',
      '$2a$10$MZgW78PP25MBLY3vIy6EvODh/cnJk61sF594B2UESfXlYrGa.MTjK');
 

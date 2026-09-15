@@ -14,12 +14,12 @@ public record RegisterUserRequest(
         @Schema(description = "First name", example = "Veljko")
         @NotBlank(message = "Name is required")
         @Size(max = 50)
-        String ime,
+        String firstName,
 
         @Schema(description = "Last name", example = "Petrović")
         @NotBlank(message = "Surname is required")
         @Size(max = 50)
-        String prezime,
+        String lastName,
 
         @Schema(description = "Email address, used for login and purchase confirmations",
                 example = "veljko@example.com")

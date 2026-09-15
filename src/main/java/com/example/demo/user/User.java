@@ -13,11 +13,11 @@ public class User {
     @Column(nullable = false, unique = true, length = 13)
     private String jmbg;
 
-    @Column(nullable = false, length = 50)
-    private String ime;
+    @Column(name = "first_name", nullable = false, length = 50)
+    private String firstName;
 
-    @Column(nullable = false, length = 50)
-    private String prezime;
+    @Column(name = "last_name", nullable = false, length = 50)
+    private String lastName;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
@@ -31,10 +31,10 @@ public class User {
 
     protected User(){}
 
-    public User(String jmbg, String ime, String prezime, UserRole role, String email, String passwordHashed) {
+    public User(String jmbg, String firstName, String lastName, UserRole role, String email, String passwordHashed) {
         this.jmbg = jmbg;
-        this.ime = ime;
-        this.prezime = prezime;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.role = role;
         this.email = email;
         this.passwordHashed = passwordHashed;
@@ -52,20 +52,20 @@ public class User {
         this.jmbg = jmbg;
     }
 
-    public String getIme() {
-        return ime;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setIme(String ime) {
-        this.ime = ime;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
-    public String getPrezime() {
-        return prezime;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setPrezime(String prezime) {
-        this.prezime = prezime;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public UserRole getRole() {
