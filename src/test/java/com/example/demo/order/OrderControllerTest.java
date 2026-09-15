@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -33,20 +34,21 @@ class OrderControllerTest {
     @MockitoBean OrderService orderService;
 
     @Test
-    @DisplayName("korisnik vidi samo svoje narudžbine")
+    @DisplayName("user only gets their orders")
     void meReturnsOnlyOwnOrders() throws Exception {
-        when(orderService.findMyOrders("ivan@gmail.com")).thenReturn(List.of(/* ... */));
+        when(orderService.findMyOrders("ivan@gmail.com")).thenReturn(List.of());
 
         mvc.perform(get("/api/orders/me")
-                        .with(user("ivan@gmail.com").roles("USER")))
+                        .principal(new UsernamePasswordAuthenticationToken(
+                                "ivan@gmail.com", null, List.of())))
                 .andExpect(status().isOk());
 
         verify(orderService).findMyOrders("ivan@gmail.com");
     }
 
     @Test
-    @DisplayName("neulogovan korisnik ne može da vidi narudžbine")
-    void meRequiresAuthentication() throws Exception {
+    @DisplayName("admin gets all orders")
+    void findAllReturnsOrders() throws Exception {
         when(orderService.findAll()).thenReturn(List.of());
 
         mvc.perform(get("/api/orders")
