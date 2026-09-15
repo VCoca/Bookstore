@@ -13,6 +13,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ProblemDetail;
 import org.springframework.security.core.Authentication;
 
@@ -28,7 +31,13 @@ public interface BookApi {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Books found")
     })
-    List<BookDto> findAll();
+    @Parameter(name = "page", description = "Page number (0-based)", example = "0",
+            schema = @Schema(type = "integer", defaultValue = "0"))
+    @Parameter(name = "size", description = "Page size", example = "20",
+            schema = @Schema(type = "integer", defaultValue = "20"))
+    @Parameter(name = "sort", description = "Sort by field, e.g. title,asc", example = "title,asc",
+            schema = @Schema(type = "string"))
+    Page<BookDto> findAll(@Parameter(hidden = true) Pageable pageable);
 
     @Operation(
             summary = "Get a book by ID",

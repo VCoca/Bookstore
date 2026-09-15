@@ -7,6 +7,7 @@ import com.example.demo.payment.exception.PaymentDeclinedException;
 import com.example.demo.payment.exception.PaymentGatewayException;
 import com.example.demo.user.exception.EmailAlreadyUsedException;
 import com.example.demo.user.exception.JmbgAlreadyUsedException;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -91,6 +92,14 @@ public class DomainExceptionHandler {
         problem.setTitle("Validation failed");
         problem.setDetail("One or more fields are invalid");
         problem.setProperty("errors", errors);
+        return problem;
+    }
+
+    @ExceptionHandler(InvalidDataAccessApiUsageException.class)
+    public ProblemDetail handleInvalidSort(InvalidDataAccessApiUsageException ex) {
+        var problem = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST,
+                "Invalid sort parameter");
+        problem.setTitle("Invalid request parameter");
         return problem;
     }
 }

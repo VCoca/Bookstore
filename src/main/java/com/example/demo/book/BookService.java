@@ -16,6 +16,8 @@ import com.example.demo.user.User;
 import com.example.demo.user.UserRepository;
 import com.example.demo.user.exception.UserNotFoundException;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -39,10 +41,9 @@ public class BookService {
         this.paymentClient = paymentClient;
     }
 
-    public List<BookDto> findAll(){
-        return bookRepository.findAll().stream()
-                .map(BookDto::from)
-                .toList();
+    public Page<BookDto> findAll(Pageable pageable){
+        return bookRepository.findAll(pageable)
+                .map(BookDto::from);
     }
 
     public BookDto findById(Long id) {
