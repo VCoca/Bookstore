@@ -3,6 +3,7 @@ package com.example.demo.book;
 
 import com.example.demo.book.dto.BookDto;
 import com.example.demo.book.dto.CreateBookRequest;
+import com.example.demo.book.dto.DescriptionResponse;
 import com.example.demo.book.dto.UpdateBookRequest;
 import com.example.demo.order.dto.OrderDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -47,7 +48,7 @@ public interface BookApi {
             @ApiResponse(responseCode = "404", description = "No book with that ID",
                     content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
     })
-    BookDto findById(
+    DescriptionResponse findById(
             @Parameter(description = "Book ID", example = "1") Long id);
 
     @Operation(

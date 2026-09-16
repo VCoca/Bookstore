@@ -32,5 +32,8 @@ public record UpdateBookRequest(
         @Schema(description = "Price of the book", example = "1000")
         @NotNull
         @PositiveOrZero
-        BigDecimal price
+        BigDecimal price,
+
+        @Schema(description = "Description of the book", example = "This is a description of the book.")
+        String description
 ) {}

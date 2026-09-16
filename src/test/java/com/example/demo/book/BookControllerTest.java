@@ -2,6 +2,7 @@ package com.example.demo.book;
 
 import com.example.demo.book.dto.BookDto;
 import com.example.demo.book.dto.CreateBookRequest;
+import com.example.demo.book.dto.DescriptionResponse;
 import com.example.demo.book.exception.BookNotFoundException;
 import com.example.demo.book.exception.NoMoreBooksException;
 import com.example.demo.exceptionHandler.DomainExceptionHandler;
@@ -17,6 +18,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.testcontainers.shaded.com.trilead.ssh2.crypto.cipher.DES;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -44,8 +46,8 @@ class BookControllerTest {
     @DisplayName("GET /api/books/{id} returns a book")
     void findByIdReturnsBook() throws Exception {
         when(service.findById(1L)).thenReturn(
-                new BookDto(1L, "Na Drini ćuprija", "Ivo Andrić", "9788610010114",
-                        1945, 3, new BigDecimal("1200.00")));
+                new DescriptionResponse(1L, "Na Drini ćuprija", "Ivo Andrić", "9788610010114",
+                        1945, 3, new BigDecimal("1200.00"), "Neki opis."));
 
         mvc.perform(get("/api/books/1"))
                 .andExpect(status().isOk())

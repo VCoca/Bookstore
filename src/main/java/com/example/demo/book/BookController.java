@@ -2,6 +2,7 @@ package com.example.demo.book;
 
 import com.example.demo.book.dto.BookDto;
 import com.example.demo.book.dto.CreateBookRequest;
+import com.example.demo.book.dto.DescriptionResponse;
 import com.example.demo.book.dto.UpdateBookRequest;
 import com.example.demo.order.dto.OrderDto;
 import jakarta.validation.Valid;
@@ -32,7 +33,7 @@ public class BookController implements BookApi {
 
     @Override
     @GetMapping("/{id}")
-    public BookDto findById(@PathVariable Long id){
+    public DescriptionResponse findById(@PathVariable Long id){
         return service.findById(id);
     }
 

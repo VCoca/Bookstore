@@ -30,16 +30,20 @@ public class Book {
     @Column(precision = 8, scale = 2, nullable = false)
     private BigDecimal price;
 
+    @Column(columnDefinition = "TEXT")
+    private String description;
+
     protected Book(){
     }
 
-    public Book(String title, String author, String isbn, Integer publishedYear, Integer availableCopies, BigDecimal price) {
+    public Book(String title, String author, String isbn, Integer publishedYear, Integer availableCopies, BigDecimal price, String description) {
         this.title = title;
         this.author = author;
         this.isbn = isbn;
         this.publishedYear = publishedYear;
         this.availableCopies = availableCopies;
         this.price = price;
+        this.description = description;
     }
 
     public Long getId() {
@@ -92,5 +96,13 @@ public class Book {
 
     public void setPrice(BigDecimal price) {
         this.price = price;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

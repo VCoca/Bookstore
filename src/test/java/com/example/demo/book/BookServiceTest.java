@@ -56,7 +56,7 @@ class BookServiceTest {
     @BeforeEach
     void setUp(){
 
-        book = new Book("Na Drini ćuprija", "Ivo Andrić", ISBN, 1945, 3, BigDecimal.valueOf(1200));
+        book = new Book("Na Drini ćuprija", "Ivo Andrić", ISBN, 1945, 3, BigDecimal.valueOf(1200), "Neki opis.");
         ReflectionTestUtils.setField(book, "id", 1L);
 
         user = new User("1122334455667", "Ivan", "Ivanovic", UserRole.USER, EMAIL, "$2a$10$hash");
@@ -133,7 +133,7 @@ class BookServiceTest {
         when(bookRepository.existsByIsbn(ISBN)).thenReturn(true);
 
         assertThatThrownBy(() -> service.create(new CreateBookRequest(
-                "Na Drini ćuprija", "Ivo Andrić", ISBN, 1945, 10, new BigDecimal("1200.00"))))
+                "Na Drini ćuprija", "Ivo Andrić", ISBN, 1945, 10, new BigDecimal("1200.00"), "Neki opis.")))
                 .isInstanceOf(DuplicateIsbnException.class);
 
         verify(bookRepository, never()).save(any());
@@ -145,7 +145,7 @@ class BookServiceTest {
         when(bookRepository.findById(1L)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> service.update(1L, new UpdateBookRequest(
-                "Seobe", "Miloš Crnjanski", 1946, 5, new BigDecimal("800.00"))))
+                "Seobe", "Miloš Crnjanski", 1946, 5, new BigDecimal("800.00"), "Neki opis.")))
                 .isInstanceOf(BookNotFoundException.class);
 
     }
@@ -156,7 +156,7 @@ class BookServiceTest {
         when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
 
         BookDto result = service.update(1L, new UpdateBookRequest(
-                "Novi naslov", "Novi autor", 2000, 7, new BigDecimal("999.00")));
+                "Novi naslov", "Novi autor", 2000, 7, new BigDecimal("999.00"), "Neki opis"));
 
         assertThat(result.title()).isEqualTo("Novi naslov");
         assertThat(book.getTitle()).isEqualTo("Novi naslov");

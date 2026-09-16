@@ -2,6 +2,7 @@ package com.example.demo.book;
 
 import com.example.demo.book.dto.BookDto;
 import com.example.demo.book.dto.CreateBookRequest;
+import com.example.demo.book.dto.DescriptionResponse;
 import com.example.demo.book.dto.UpdateBookRequest;
 import com.example.demo.book.exception.BookNotFoundException;
 import com.example.demo.book.exception.DuplicateIsbnException;
@@ -46,9 +47,9 @@ public class BookService {
                 .map(BookDto::from);
     }
 
-    public BookDto findById(Long id) {
+    public DescriptionResponse findById(Long id) {
         return bookRepository.findById(id)
-                .map(BookDto::from)
+                .map(DescriptionResponse::from)
                 .orElseThrow(() -> new BookNotFoundException(id));
     }
 
@@ -98,7 +99,8 @@ public class BookService {
                 request.isbn(),
                 request.publishedYear(),
                 request.availableCopies(),
-                request.price()
+                request.price(),
+                request.description()
         );
         return BookDto.from(bookRepository.save(book));
     }
@@ -113,6 +115,7 @@ public class BookService {
         book.setPublishedYear(request.publishedYear());
         book.setAvailableCopies(request.availableCopies());
         book.setPrice(request.price());
+        book.setDescription(request.description());
 
         return BookDto.from(book);
     }
