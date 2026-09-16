@@ -41,7 +41,7 @@ class BuyBookIT extends IntegrationTestBase {
         userRepository.deleteAll();
 
         bookRepository.save(new Book("Na Drini ćuprija", "Ivo Andrić", ISBN,
-                1945, 3, new BigDecimal("1200.00")));
+                1945, 3, new BigDecimal("1200.00"), "Neki opis."));
         userRepository.save(new User("1122334455667", "Ivan", "Ivanović",
                 UserRole.USER, EMAIL, "$2a$10$hash"));
     }

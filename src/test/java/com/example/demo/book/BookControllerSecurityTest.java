@@ -43,7 +43,7 @@ public class BookControllerSecurityTest {
                         1929, 5, new BigDecimal("800.00")));
 
         var request = new CreateBookRequest("Seobe", "Miloš Crnjanski", "9788610012369",
-                1929, 5, new BigDecimal("800.00"));
+                1929, 5, new BigDecimal("800.00"), "Neki opis.");
 
         mvc.perform(post("/api/books/admin")
                         .with(user("marko@gmail.com").roles("ADMIN"))

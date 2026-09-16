@@ -16,6 +16,8 @@ import com.example.demo.payment.dto.PaymentResult;
 import com.example.demo.user.User;
 import com.example.demo.user.UserRepository;
 import com.example.demo.user.exception.UserNotFoundException;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -47,6 +49,7 @@ public class BookService {
                 .map(BookDto::from);
     }
 
+    @Cacheable("bookById")
     public DescriptionResponse findById(Long id) {
         return bookRepository.findById(id)
                 .map(DescriptionResponse::from)
@@ -60,6 +63,7 @@ public class BookService {
     }
 
     @Transactional
+    @CacheEvict(value = "bookById", allEntries = true)
     public OrderDto buyBook(String isbn, String buyerEmail){
 
         int updated = bookRepository.decrementCopies(isbn);
@@ -106,6 +110,7 @@ public class BookService {
     }
 
     @Transactional
+    @CacheEvict(value = "bookById", key = "#id")
     public BookDto update(Long id, UpdateBookRequest request) {
         Book book = bookRepository.findById(id)
                 .orElseThrow(() -> new BookNotFoundException(id));
@@ -121,6 +126,7 @@ public class BookService {
     }
 
     @Transactional
+    @CacheEvict(value = "bookById", key = "#id")
     public void delete(Long id) {
         if (!bookRepository.existsById(id)) {
             throw new BookNotFoundException(id);

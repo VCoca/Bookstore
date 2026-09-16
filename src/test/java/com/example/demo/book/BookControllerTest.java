@@ -68,7 +68,7 @@ class BookControllerTest {
     @Test
     @DisplayName("POST /api/books/admin returns 400 with map of errors")
     void createReturns400OnInvalidBody() throws Exception {
-        var invalid = new CreateBookRequest("", "", "nije-isbn", 1200, -5, new BigDecimal("-1"));
+        var invalid = new CreateBookRequest("", "", "nije-isbn", 1200, -5, new BigDecimal("-1"), "Neki opis.");
 
         mvc.perform(post("/api/books/admin")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -85,7 +85,7 @@ class BookControllerTest {
     @DisplayName("POST /api/books/admin returns 201 for valid body")
     void createReturns201() throws Exception {
         var request = new CreateBookRequest("Seobe", "Miloš Crnjanski", "9788610012369",
-                1929, 5, new BigDecimal("800.00"));
+                1929, 5, new BigDecimal("800.00"), "Neki opis.");
         when(service.create(any())).thenReturn(
                 new BookDto(2L, "Seobe", "Miloš Crnjanski", "9788610012369",
                         1929, 5, new BigDecimal("800.00")));
