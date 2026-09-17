@@ -8,6 +8,8 @@ import com.example.demo.dto.DescriptionResponse;
 import com.example.demo.dto.UpdateBookRequest;
 import com.example.demo.dto.OrderDto;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -22,6 +24,7 @@ import java.util.List;
 public class BookController implements BookApi {
 
     private final BookService service;
+    private static final Logger log = LoggerFactory.getLogger(BookController.class);
 
     public BookController(BookService service){
         this.service = service;
@@ -36,7 +39,10 @@ public class BookController implements BookApi {
     @Override
     @GetMapping("/{id}")
     public DescriptionResponse findById(@PathVariable Long id){
-        return service.findById(id);
+        long start = System.nanoTime();
+        DescriptionResponse result = service.findById(id);
+        log.info("GET /api/books/{} — {} ms", id, (System.nanoTime() - start) / 1_000_000.0);
+        return result;
     }
 
     @Override
