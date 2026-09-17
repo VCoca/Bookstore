@@ -29,8 +29,8 @@ public class LoginRateLimiter {
     private Bucket newBucket(){
         return Bucket.builder()
                 .addLimit(Bandwidth.builder()
-                        .capacity(5)
-                        .refillIntervally(5, Duration.ofMinutes(15))
+                        .capacity(3)
+                        .refillIntervally(3, Duration.ofMinutes(15))
                         .build())
                 .build();
     }
