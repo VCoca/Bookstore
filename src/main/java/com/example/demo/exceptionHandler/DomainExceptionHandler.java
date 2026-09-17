@@ -5,6 +5,7 @@ import com.example.demo.book.exception.DuplicateIsbnException;
 import com.example.demo.book.exception.NoMoreBooksException;
 import com.example.demo.payment.exception.PaymentDeclinedException;
 import com.example.demo.payment.exception.PaymentGatewayException;
+import com.example.demo.security.exception.TooManyLoginAttemptsException;
 import com.example.demo.user.exception.EmailAlreadyUsedException;
 import com.example.demo.user.exception.JmbgAlreadyUsedException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
@@ -100,6 +101,14 @@ public class DomainExceptionHandler {
         var problem = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST,
                 "Invalid sort parameter");
         problem.setTitle("Invalid request parameter");
+        return problem;
+    }
+
+    @ExceptionHandler(TooManyLoginAttemptsException.class)
+    public ProblemDetail handleTooManyAttempts(TooManyLoginAttemptsException ex) {
+        var problem = ProblemDetail.forStatusAndDetail(
+                HttpStatus.TOO_MANY_REQUESTS, ex.getMessage());
+        problem.setTitle("Too many requests");
         return problem;
     }
 }

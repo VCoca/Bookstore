@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ProblemDetail;
 
 @Tag(name = "Users", description = "Login and register")
@@ -35,7 +36,9 @@ public interface UserApi {
             @ApiResponse(responseCode = "400", description = "Invalid request body",
                     content = @Content(schema = @Schema(implementation = ProblemDetail.class))),
             @ApiResponse(responseCode = "401", description = "Invalid email or password",
+                    content = @Content(schema = @Schema(implementation = ProblemDetail.class))),
+            @ApiResponse(responseCode = "429", description = "Too many login attempts",
                     content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
     })
-    AuthResponse login(LoginUserRequest request);
+    AuthResponse login(LoginUserRequest request, HttpServletRequest httpRequest);
 }
