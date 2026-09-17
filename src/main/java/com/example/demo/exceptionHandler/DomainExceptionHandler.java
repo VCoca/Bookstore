@@ -1,13 +1,13 @@
 package com.example.demo.exceptionHandler;
 
-import com.example.demo.book.exception.BookNotFoundException;
-import com.example.demo.book.exception.DuplicateIsbnException;
-import com.example.demo.book.exception.NoMoreBooksException;
-import com.example.demo.payment.exception.PaymentDeclinedException;
-import com.example.demo.payment.exception.PaymentGatewayException;
-import com.example.demo.security.exception.TooManyLoginAttemptsException;
-import com.example.demo.user.exception.EmailAlreadyUsedException;
-import com.example.demo.user.exception.JmbgAlreadyUsedException;
+import com.example.demo.exception.BookNotFoundException;
+import com.example.demo.exception.DuplicateIsbnException;
+import com.example.demo.exception.NoMoreBooksException;
+import com.example.demo.exception.PaymentDeclinedException;
+import com.example.demo.exception.PaymentGatewayException;
+import com.example.demo.exception.TooManyLoginAttemptsException;
+import com.example.demo.exception.EmailAlreadyUsedException;
+import com.example.demo.exception.JmbgAlreadyUsedException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;

@@ -1,6 +1,7 @@
 package com.example.demo.security;
 
-import com.example.demo.user.UserRole;
+import com.example.demo.entity.UserRole;
+import com.example.demo.service.JwtService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

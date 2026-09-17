@@ -1,6 +1,6 @@
 package com.example.demo.mail;
 
-import com.example.demo.book.BookPurchasedEvent;
+import com.example.demo.service.EmailService;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;

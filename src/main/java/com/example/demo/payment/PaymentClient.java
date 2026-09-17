@@ -1,7 +1,7 @@
 package com.example.demo.payment;
 
-import com.example.demo.payment.dto.PaymentRequest;
-import com.example.demo.payment.dto.PaymentResult;
+import com.example.demo.dto.PaymentRequest;
+import com.example.demo.dto.PaymentResult;
 
 public interface PaymentClient {
     PaymentResult charge(PaymentRequest request);

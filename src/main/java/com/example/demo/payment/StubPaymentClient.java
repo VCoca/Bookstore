@@ -1,10 +1,9 @@
 package com.example.demo.payment;
 
-import com.example.demo.payment.dto.PaymentRequest;
-import com.example.demo.payment.dto.PaymentResult;
-import com.example.demo.payment.exception.PaymentDeclinedException;
-import com.example.demo.payment.exception.PaymentGatewayException;
-import jakarta.annotation.PostConstruct;
+import com.example.demo.dto.PaymentRequest;
+import com.example.demo.dto.PaymentResult;
+import com.example.demo.exception.PaymentDeclinedException;
+import com.example.demo.exception.PaymentGatewayException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
