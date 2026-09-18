@@ -51,10 +51,10 @@ public class UserService {
 
     public AuthResponse login(LoginUserRequest request){
         User user = repository.findByEmail(request.email())
-                .orElseThrow(() -> new BadCredentialsException("Pogresan e-mail ili lozinka"));
+                .orElseThrow(() -> new BadCredentialsException("Wrong email or password"));
 
         if(!passwordEncoder.matches(request.password(), user.getPasswordHashed())){
-            throw new BadCredentialsException("Pogresan e-mail ili lozinka");
+            throw new BadCredentialsException("Wrong email or password");
         }
 
         String token = jwtService.generateToken(request.email(), user.getRole());

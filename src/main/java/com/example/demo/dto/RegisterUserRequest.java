@@ -8,7 +8,7 @@ public record RegisterUserRequest(
 
         @Schema(description = "JMBG, 13 digits")
         @NotBlank
-        @Pattern(regexp = "\\d{13}", message = "jmbg must be 13 digits")
+        @Pattern(regexp = "\\d{13}", message = "JMBG must be 13 digits")
         String jmbg,
 
         @Schema(description = "First name", example = "Veljko")
@@ -30,7 +30,7 @@ public record RegisterUserRequest(
 
         @Schema(description = "Password, at least 8 characters", example = "lozinka123")
         @NotBlank(message = "Password is required")
-        @Size(min = 8, max = 72, message = "Lozinka mora imati bar 8 karaktera")
+        @Size(min = 8, max = 72, message = "Password must be at least 8 characters")
         String password
 ) {
 }
