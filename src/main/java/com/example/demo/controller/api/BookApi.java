@@ -102,6 +102,8 @@ public interface BookApi {
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "Book deleted successfully"),
             @ApiResponse(responseCode = "404", description = "No book with that ID",
+                    content = @Content(schema = @Schema(implementation = ProblemDetail.class))),
+            @ApiResponse(responseCode = "409", description = "Book is already purchased",
                     content = @Content(schema = @Schema(implementation = ProblemDetail.class)))
     })
     void delete(@Parameter(description = "Book ID", example = "1") Long id);

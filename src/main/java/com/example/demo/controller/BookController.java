@@ -1,13 +1,16 @@
 package com.example.demo.controller;
 
 import com.example.demo.controller.api.BookApi;
+import com.example.demo.exception.BookAlreadyPurchasedException;
 import com.example.demo.service.BookService;
 import com.example.demo.dto.BookDto;
 import com.example.demo.dto.CreateBookRequest;
 import com.example.demo.dto.DescriptionResponse;
 import com.example.demo.dto.UpdateBookRequest;
 import com.example.demo.dto.OrderDto;
+import com.example.demo.service.OrderService;
 import jakarta.validation.Valid;
+import org.aspectj.weaver.ast.Or;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -23,24 +26,27 @@ import java.util.List;
 @RequestMapping(value = "/api/books")
 public class BookController implements BookApi {
 
-    private final BookService service;
+    private final BookService bookService;
+    private final OrderService orderService;
     private static final Logger log = LoggerFactory.getLogger(BookController.class);
 
-    public BookController(BookService service){
-        this.service = service;
+    public BookController(BookService bookService, OrderService orderService){
+
+        this.bookService = bookService;
+        this.orderService = orderService;
     }
 
     @Override
     @GetMapping
     public Page<BookDto> findAll(@PageableDefault(size = 20, sort = "title") Pageable pageable){
-        return service.findAll(pageable);
+        return bookService.findAll(pageable);
     }
 
     @Override
     @GetMapping("/{id}")
     public DescriptionResponse findById(@PathVariable Long id){
         long start = System.nanoTime();
-        DescriptionResponse result = service.findById(id);
+        DescriptionResponse result = bookService.findById(id);
         log.info("GET /api/books/{} — {} ms", id, (System.nanoTime() - start) / 1_000_000.0);
         return result;
     }
@@ -48,32 +54,35 @@ public class BookController implements BookApi {
     @Override
     @GetMapping("/search")
     public List<BookDto> searchByTitle(@RequestParam String title){
-        return service.searchByTitle(title);
+        return bookService.searchByTitle(title);
     }
 
     @Override
     @PostMapping("/{isbn}/buy")
-    public OrderDto buyBook(@PathVariable String isbn, Authentication auth) { return service.buyBook(isbn, auth.getName()); }
+    public OrderDto buyBook(@PathVariable String isbn, Authentication auth) { return bookService.buyBook(isbn, auth.getName()); }
 
     @Override
     @PostMapping("/admin")
     @ResponseStatus(HttpStatus.CREATED)
     public BookDto create(@Valid @RequestBody CreateBookRequest request){
-        return service.create(request);
+        return bookService.create(request);
     }
 
     @Override
     @PutMapping("/admin/{id}")
     public BookDto update(@PathVariable Long id,
                           @Valid @RequestBody UpdateBookRequest request){
-        return service.update(id, request);
+        return bookService.update(id, request);
     }
 
     @Override
     @DeleteMapping("/admin/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id){
-        service.delete(id);
+        if(!orderService.findByBookId(id).isEmpty()){
+            throw new BookAlreadyPurchasedException();
+        }
+        bookService.delete(id);
     }
 
 }

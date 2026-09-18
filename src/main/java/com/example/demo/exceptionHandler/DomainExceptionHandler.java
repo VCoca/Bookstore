@@ -1,13 +1,6 @@
 package com.example.demo.exceptionHandler;
 
-import com.example.demo.exception.BookNotFoundException;
-import com.example.demo.exception.DuplicateIsbnException;
-import com.example.demo.exception.NoMoreBooksException;
-import com.example.demo.exception.PaymentDeclinedException;
-import com.example.demo.exception.PaymentGatewayException;
-import com.example.demo.exception.TooManyLoginAttemptsException;
-import com.example.demo.exception.EmailAlreadyUsedException;
-import com.example.demo.exception.JmbgAlreadyUsedException;
+import com.example.demo.exception.*;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
@@ -109,6 +102,14 @@ public class DomainExceptionHandler {
         var problem = ProblemDetail.forStatusAndDetail(
                 HttpStatus.TOO_MANY_REQUESTS, ex.getMessage());
         problem.setTitle("Too many requests");
+        return problem;
+    }
+
+    @ExceptionHandler(BookAlreadyPurchasedException.class)
+    public ProblemDetail handleBookAlreadyPurchased(BookAlreadyPurchasedException ex) {
+        var problem = ProblemDetail.forStatusAndDetail(
+                HttpStatus.CONFLICT, ex.getMessage());
+        problem.setTitle("Book already purchased");
         return problem;
     }
 }
